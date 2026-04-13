@@ -1,0 +1,61 @@
+host: https://your-dokploy.example.com/api
+
+project:
+  name: Fullstack App
+  description: API, frontend, and database
+
+environment:
+  name: production
+
+databases:
+  - name: app-db
+    type: postgres
+    version: "16"
+    databaseName: app
+    databaseUser: app
+    password: change-me
+    deploy: true
+
+applications:
+  - name: api
+    source: github
+    github:
+      id: your-github-provider-id
+      owner: your-org
+      repository: your-api
+      branch: main
+      buildPath: /
+    build:
+      type: nixpacks
+    env:
+      PORT: "8080"
+      DATABASE_URL: postgres://app:change-me@app-db:5432/app
+    domains:
+      - host: api.example.com
+        port: 8080
+        path: /
+        https: true
+        certificate: letsencrypt
+    deploy: true
+
+  - name: frontend
+    source: github
+    github:
+      id: your-github-provider-id
+      owner: your-org
+      repository: your-frontend
+      branch: main
+      buildPath: /
+    build:
+      type: dockerfile
+      dockerfile: Dockerfile
+      contextPath: .
+    env:
+      VITE_BACKEND_URL: https://api.example.com
+    domains:
+      - host: app.example.com
+        port: 80
+        path: /
+        https: true
+        certificate: letsencrypt
+    deploy: true

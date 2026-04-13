@@ -1,0 +1,51 @@
+{
+  "name": "@lishugupta652/dokploy",
+  "version": "0.1.3",
+  "description": "A YAML-driven CLI for applying Dokploy projects through the Dokploy API.",
+  "type": "module",
+  "bin": {
+    "dokploy": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "examples",
+    "scripts",
+    ".githooks",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "dev": "tsx src/index.ts",
+    "hooks:install": "node scripts/install-git-hooks.mjs",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run check && npm run build",
+    "version:commit": "node scripts/bump-version-on-commit.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lishugupta652/dokploy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lishugupta652/dokploy/issues"
+  },
+  "homepage": "https://github.com/lishugupta652/dokploy#readme",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "yaml": "^2.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3"
+  }
+}

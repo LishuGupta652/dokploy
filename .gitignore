@@ -1,0 +1,5 @@
+node_modules/
+dist/
+dokploy-state.json
+*.local.yaml
+*.local.yml

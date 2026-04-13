@@ -1,0 +1,28 @@
+host: https://your-dokploy.example.com/api
+
+project:
+  name: Monitoring
+  description: Monitoring stack
+
+environment:
+  name: production
+
+compose:
+  - name: monitoring
+    source: raw
+    content: |
+      services:
+        grafana:
+          image: grafana/grafana:latest
+          ports:
+            - "3001:3000"
+    env:
+      GF_SECURITY_ADMIN_PASSWORD: change-me
+    domains:
+      - host: grafana.example.com
+        serviceName: grafana
+        port: 3000
+        path: /
+        https: true
+        certificate: letsencrypt
+    deploy: true

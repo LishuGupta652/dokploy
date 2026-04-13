@@ -1,0 +1,39 @@
+host: https://srv1212550.hstgr.cloud/api
+
+project:
+  name: My Trippl App
+  description: Trippl Prototype Frontend deployed via dokploy
+
+environment:
+  name: production
+  description: production environment
+
+applications:
+  - name: frontend
+    source: github
+    github:
+      id: Pitn0FdkUpj_MIEdH1j-C
+      owner: trippl-hq-dokploy-02
+      repository: trippl-prototype-frontend
+      branch: main
+      buildPath: /
+      triggerType: push
+    build:
+      type: dockerfile
+      dockerfile: Dockerfile
+      contextPath: .
+    env:
+      VITE_COMPLIANCE_BACKEND_URL: https://compliance-service.trippl.in
+      VITE_BACKEND_URL: https://prototype-service.trippl.in
+      VITE_FASTAPI_BACKEND_URL: https://prototype-service.trippl.in
+      VITE_KINDE_CLIENT_ID: ef14072ea6c04688b84c1d27974dcfd6
+      VITE_KINDE_DOMAIN: https://lishu-termite.au.kinde.com
+      VITE_KINDE_ORG_CODE: org_87eea735527c
+      VITE_ALLOWED_DOMAINS: pilot-tech.co,trippl.co
+    domains:
+      - host: terraform-dokploy-test.trippl.in
+        port: 80
+        path: /
+        https: true
+        certificate: letsencrypt
+    deploy: true
