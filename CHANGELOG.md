@@ -10,6 +10,7 @@ _Initial changelog generated from repository history._
 
 ### Other Changes
 
+- test (9ab9e57)
 - add script for deployment (c511505)
 - first commit (3f5e457)
 

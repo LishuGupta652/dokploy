@@ -4,20 +4,23 @@ set -eu
 PACKAGE_MANAGER="npm"
 PUBLISH="0"
 ACCESS="public"
+BUMP="patch"
 
 usage() {
   cat <<'EOF'
 Usage:
-  ./scripts/publish.sh [npm|pnpm] [--publish] [--access public|restricted]
+  ./scripts/publish.sh [npm|pnpm] [--publish] [--access public|restricted] [--bump patch|minor|major|none]
 
 Examples:
   ./scripts/publish.sh npm
   ./scripts/publish.sh npm --publish
+  ./scripts/publish.sh npm --publish --bump minor
   ./scripts/publish.sh pnpm
   ./scripts/publish.sh pnpm --publish
 
 Default mode is safe: it runs checks and pack dry-run only.
 Pass --publish to publish @lishugupta652/dokploy to npm.
+In publish mode, if the current version already exists on npm, the script bumps patch by default.
 EOF
 }
 
@@ -41,6 +44,22 @@ while [ "$#" -gt 0 ]; do
         exit 1
       fi
       ACCESS="$2"
+      shift 2
+      ;;
+    --bump)
+      if [ "$#" -lt 2 ]; then
+        echo "Missing value for --bump" >&2
+        exit 1
+      fi
+      case "$2" in
+        patch|minor|major|none)
+          BUMP="$2"
+          ;;
+        *)
+          echo "--bump must be patch, minor, major, or none" >&2
+          exit 1
+          ;;
+      esac
       shift 2
       ;;
     -h|--help)
@@ -79,6 +98,7 @@ fi
 echo "Package manager: $PACKAGE_MANAGER"
 echo "Publish mode:    $PUBLISH"
 echo "Access:          $ACCESS"
+echo "Version bump:    $BUMP"
 echo ""
 
 if [ "$PUBLISH" = "1" ]; then
@@ -87,6 +107,10 @@ if [ "$PUBLISH" = "1" ]; then
     exit 1
   fi
   echo "Logged in as: $("$PACKAGE_MANAGER" whoami)"
+  echo ""
+
+  echo "Checking npm version availability..."
+  node scripts/ensure-publish-version.mjs --package-manager "$PACKAGE_MANAGER" --bump "$BUMP"
   echo ""
 fi
 
