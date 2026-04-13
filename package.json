@@ -11,15 +11,18 @@
     "examples",
     "scripts",
     ".githooks",
+    "CHANGELOG.md",
     "README.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "changelog": "node scripts/generate-changelog.mjs",
     "check": "tsc -p tsconfig.json --noEmit",
     "dev": "tsx src/index.ts",
+    "commit-msg": "node scripts/commit-msg.mjs",
     "hooks:install": "node scripts/install-git-hooks.mjs",
     "prepack": "npm run build",
-    "prepublishOnly": "npm run check && npm run build",
+    "prepublishOnly": "npm run check && npm run build && npm run changelog",
     "version:commit": "node scripts/bump-version-on-commit.mjs"
   },
   "publishConfig": {

@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+PACKAGE_DIR="dokploy-deploy-automation"
+if [ ! -f "$PACKAGE_DIR/scripts/commit-msg.mjs" ]; then
+  PACKAGE_DIR="."
+fi
+
+node "$PACKAGE_DIR/scripts/commit-msg.mjs" "$1"

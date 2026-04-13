@@ -80,6 +80,8 @@ Or use the helper script:
 
 The script defaults to dry-run mode and publishes only when `--publish` is passed.
 
+Publishing also generates `CHANGELOG.md` from git commits since the latest tag. Conventional Commit messages are grouped into sections such as Features, Fixes, Breaking Changes, and Chores.
+
 ## Commit Version Hook
 
 Install the repo hook once:
@@ -88,7 +90,17 @@ Install the repo hook once:
 npm run hooks:install
 ```
 
-The pre-commit hook bumps the package patch version and stages `package.json` plus `package-lock.json`. Set `SKIP_DOKPLOY_VERSION_BUMP=1` to skip it for a commit.
+The `commit-msg` hook enforces Conventional Commits and bumps `package.json` plus `package-lock.json` from the commit message:
+
+```text
+feat: add project listing          # minor
+fix(projects): normalize host      # patch
+perf: improve status lookup        # patch
+feat!: change config schema        # major
+docs: update usage                 # no version bump
+```
+
+Use `SKIP_DOKPLOY_VERSION_BUMP=1` to keep commit validation but skip version changes. Use `SKIP_DOKPLOY_COMMIT_CHECK=1` only when you intentionally need to bypass the hook.
 
 ## Notes
 

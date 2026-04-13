@@ -103,6 +103,15 @@ node dist/index.js --version
 node dist/index.js --help >/dev/null
 
 echo ""
+if [ "$PUBLISH" = "1" ]; then
+  echo "Generating changelog..."
+  "$PACKAGE_MANAGER" run changelog
+else
+  echo "Changelog dry-run..."
+  "$PACKAGE_MANAGER" run changelog -- --dry-run
+fi
+
+echo ""
 echo "Pack dry-run..."
 "$PACKAGE_MANAGER" pack --dry-run
 
