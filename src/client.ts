@@ -22,7 +22,7 @@ export class DokployClient {
   private readonly apiKey: string;
 
   constructor(options: DokployClientOptions) {
-    this.baseUrl = options.host.replace(/\/+$/, "");
+    this.baseUrl = normalizeDokployHost(options.host);
     this.apiKey = options.apiKey;
   }
 
@@ -108,15 +108,41 @@ export class DokployClient {
 
   private formatErrorMessage(status: number, endpoint: string, body: string): string {
     const detail = extractErrorDetail(body);
-    const hint =
-      status === 401 || status === 403
-        ? " Check DOKPLOY_API_KEY and the API key permissions."
-        : "";
+    const hint = errorHint(status, body);
 
     return `Dokploy API ${endpoint} failed with HTTP ${status}${
       detail ? `: ${detail}` : ""
     }.${hint}`;
   }
+}
+
+function normalizeDokployHost(host: string): string {
+  const url = new URL(host);
+  const pathname = url.pathname.replace(/\/+$/, "");
+
+  if (!pathname || pathname === "/") {
+    url.pathname = "/api";
+  } else if (!pathname.endsWith("/api")) {
+    url.pathname = `${pathname}/api`;
+  } else {
+    url.pathname = pathname;
+  }
+
+  url.search = "";
+  url.hash = "";
+  return url.toString().replace(/\/+$/, "");
+}
+
+function errorHint(status: number, body: string): string {
+  if (status === 401 || status === 403) {
+    return " Check DOKPLOY_API_KEY and the API key permissions.";
+  }
+
+  if (status === 404 && /<html/i.test(body)) {
+    return " Dokploy returned an HTML page, which usually means the request hit the web UI instead of the API. The CLI now normalizes root hosts to /api; verify the host points to your Dokploy server.";
+  }
+
+  return "";
 }
 
 function extractErrorDetail(body: string): string | undefined {

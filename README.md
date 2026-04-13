@@ -24,6 +24,14 @@ npm install -g @lishugupta652/dokploy
 dokploy --help
 ```
 
+For a local install, run the binary through npm:
+
+```bash
+npm install @lishugupta652/dokploy
+npx dokploy --help
+npm exec dokploy -- --help
+```
+
 ## Environment
 
 ```bash
@@ -31,7 +39,7 @@ export DOKPLOY_API_KEY=your-api-key
 export DOKPLOY_HOST=https://your-dokploy.example.com/api
 ```
 
-`DOKPLOY_HOST` is optional when `host` is set in the YAML file. API keys are never read from config.
+`DOKPLOY_HOST` is optional when `host` is set in the YAML file. API keys are never read from config. The CLI accepts either `https://your-dokploy.example.com` or `https://your-dokploy.example.com/api` and normalizes root hosts to `/api`.
 
 ## Commands
 
@@ -39,6 +47,7 @@ export DOKPLOY_HOST=https://your-dokploy.example.com/api
 dokploy projects --host https://your-dokploy.example.com/api
 dokploy projects --summary --host https://your-dokploy.example.com/api
 dokploy projects --json --host https://your-dokploy.example.com/api
+dokploy projects --host https://your-dokploy.example.com
 dokploy apply -f dokploy.yaml
 dokploy apply -f dokploy.yaml --dry-run
 dokploy deploy frontend -f dokploy.yaml
@@ -59,6 +68,17 @@ npm publish --access public
 ```
 
 `prepublishOnly` runs the TypeScript check and build before publishing.
+
+Or use the helper script:
+
+```bash
+./scripts/publish.sh npm
+./scripts/publish.sh npm --publish
+./scripts/publish.sh pnpm
+./scripts/publish.sh pnpm --publish
+```
+
+The script defaults to dry-run mode and publishes only when `--publish` is passed.
 
 ## Commit Version Hook
 
