@@ -274,6 +274,20 @@ If the current package version is already on npm, the publish script bumps `patc
 ./scripts/publish.sh npm --publish --bump none
 ```
 
+Publish to GitHub Packages:
+
+```bash
+npm login --scope=@lishugupta652 --auth-type=legacy --registry=https://npm.pkg.github.com
+./scripts/publish.sh npm --registry github --publish
+```
+
+Shortcut scripts:
+
+```bash
+npm run publish:npm
+npm run publish:github
+```
+
 pnpm flow:
 
 ```bash
@@ -283,7 +297,44 @@ pnpm flow:
 
 Publishing generates `CHANGELOG.md` from git commits since the latest tag. Conventional Commit messages are grouped into sections such as Features, Fixes, Breaking Changes, and Chores.
 
-Direct `npm publish --access public` is also protected by `prepublishOnly`: it checks whether the current version already exists on npm and bumps `patch` when needed before building and generating the changelog.
+Direct `npm publish --access public` is also protected by `prepublishOnly`: it checks whether the current version already exists in the selected registry and bumps `patch` when needed before building and generating the changelog.
+
+## GitHub Packages
+
+This package can also be published to GitHub Packages.
+
+GitHub Packages requires a personal access token (classic) for local publishing. The token needs `write:packages` to publish and `read:packages` to install. Use `GITHUB_TOKEN` in GitHub Actions when publishing from the repository workflow.
+
+Login locally:
+
+```bash
+npm login --scope=@lishugupta652 --auth-type=legacy --registry=https://npm.pkg.github.com
+```
+
+Use your GitHub username as the username and the token as the password.
+
+Publish:
+
+```bash
+./scripts/publish.sh npm --registry github --publish
+```
+
+GitHub Packages publishes new packages as private by default. Change visibility or access from GitHub after the first publish when you want the package to be public.
+
+Install from GitHub Packages by adding this to an `.npmrc` file:
+
+```ini
+@lishugupta652:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+```
+
+Then install:
+
+```bash
+NODE_AUTH_TOKEN=your-github-token npm install @lishugupta652/dokploy
+```
+
+See [`.npmrc.github.example`](.npmrc.github.example) for the registry mapping template.
 
 ## Commit Messages And Versioning
 

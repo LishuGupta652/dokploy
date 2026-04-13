@@ -1,6 +1,6 @@
 {
   "name": "@lishugupta652/dokploy",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A YAML-driven CLI for applying Dokploy projects through the Dokploy API.",
   "type": "module",
   "bin": {
@@ -11,6 +11,7 @@
     "examples",
     "scripts",
     ".githooks",
+    ".npmrc.github.example",
     "CHANGELOG.md",
     "README.md"
   ],
@@ -23,6 +24,8 @@
     "hooks:install": "node scripts/install-git-hooks.mjs",
     "prepack": "npm run build",
     "prepublishOnly": "npm run version:publish && npm run check && npm run build && npm run changelog",
+    "publish:github": "./scripts/publish.sh npm --registry github --publish",
+    "publish:npm": "./scripts/publish.sh npm --registry npmjs --publish",
     "version:publish": "node scripts/ensure-publish-version.mjs",
     "version:commit": "node scripts/bump-version-on-commit.mjs"
   },

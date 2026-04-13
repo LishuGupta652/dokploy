@@ -66,6 +66,7 @@ function parseArgs(args) {
   const parsed = {
     bump: "patch",
     packageManager: "npm",
+    registry: process.env.npm_config_registry || "https://registry.npmjs.org",
     dryRun: false,
   };
 
@@ -78,6 +79,10 @@ function parseArgs(args) {
         break;
       case "--package-manager":
         parsed.packageManager = stringArg(args, index);
+        index += 1;
+        break;
+      case "--registry":
+        parsed.registry = registryUrl(stringArg(args, index));
         index += 1;
         break;
       case "--dry-run":
@@ -110,7 +115,7 @@ function isVersionPublished(packageManager, packageName, version) {
   try {
     const output = execFileSync(
       packageManager,
-      ["view", `${packageName}@${version}`, "version", "--json"],
+      ["view", `${packageName}@${version}`, "version", "--json", "--registry", options.registry],
       {
         encoding: "utf8",
         stdio: ["ignore", "pipe", "pipe"],
@@ -124,6 +129,19 @@ function isVersionPublished(packageManager, packageName, version) {
       return false;
     }
     throw error;
+  }
+}
+
+function registryUrl(registry) {
+  switch (registry) {
+    case "npm":
+    case "npmjs":
+      return "https://registry.npmjs.org";
+    case "github":
+    case "gh":
+      return "https://npm.pkg.github.com";
+    default:
+      return registry;
   }
 }
 
